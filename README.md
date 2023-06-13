@@ -17,16 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## TODO
-
-Frontend
-(1) create a side navigationalBar with map | list of liked events |  
-(2) Load a map on the frontend
-(3) show events on the map
-
-
-Backend
-(1) fetch events from api and print out
-(2) able to like events 
-(3) see a seperate tab with all liked event
-(4) send push notification of events soon happening.
-(5) sort all events
+Check https://github.com/b3ngtsson/eventsGothenburg/issues 
