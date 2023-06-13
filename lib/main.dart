@@ -3,13 +3,15 @@ import 'dart:math';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp();
 
   @override
   Widget build(BuildContext context) {
@@ -150,40 +152,102 @@ class FavouritePage extends StatelessWidget {
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
+    return MaterialApp(
+      home: Scaffold(
+        body: MyMap(),
+      ),
+    );
+  }
+}
 
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
+final List<Location> locations = [
+  Location(
+      id: '1',
+      name: 'Place 1',
+      type: 'Restaurant',
+      latLng: LatLng(57.7089, 11.9746),
+      rating: 4.5,
+      icon: Icon(Icons.fastfood)),
+  Location(
+      id: '2',
+      name: 'Place 2',
+      type: 'Park',
+      latLng: LatLng(57.7044, 11.9613),
+      rating: 4.7,
+      icon: Icon(Icons.nature)),
+  Location(
+      id: '3',
+      name: 'Place 3',
+      type: 'Museum',
+      latLng: LatLng(57.6972, 11.9765),
+      rating: 4.6,
+      icon: Icon(Icons.museum)),
+];
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
+class MyMap extends StatelessWidget {
+  // Mock data for markers
+
+  static final LatLng gothenburg = LatLng(57.7089, 11.9746);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => MarkerVisibility(),
+      child: FlutterMap(
+        options: MapOptions(
+          center: gothenburg,
+          zoom: 13.0,
+        ),
+        layers: [
+          TileLayerOptions(
+            urlTemplate:
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+          ),
+          MarkerLayerOptions(
+            markers: locations
+                .map((location) => Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: location.latLng,
+                      builder: (ctx) => Consumer<MarkerVisibility>(
+                        builder: (context, visibility, _) => GestureDetector(
+                          onTap: () => visibility.visibleLocation == location
+                              ? visibility.hideMarker()
+                              : visibility.showMarker(location),
+                          child: visibility.visibleLocation == location
+                              ? Container(
+                                  color: Colors.white,
+                                  child: Row(
+                                    children: [
+                                      Image.network(
+                                          'https://upload.wikimedia.org/wikipedia/commons/7/75/GBG-logo_2021.png'),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        // add this
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(location.name,
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible),
+                                            Text(location.type,
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible),
+                                            Text('${location.rating}⭐',
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : location.icon,
+                        ),
+                      ),
+                    ))
+                .toList(),
           ),
         ],
       ),
@@ -191,31 +255,41 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
+// https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png
+// https://upload.wikimedia.org/wikipedia/commons/7/75/GBG-logo_2021.png
 
-  final WordPair pair;
+class MarkerVisibility extends ChangeNotifier {
+  Location? _visibleLocation;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
+  Location? get visibleLocation => _visibleLocation;
 
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-        ),
-      ),
-    );
+  void showMarker(Location location) {
+    if (_visibleLocation != location) {
+      _visibleLocation = location;
+      notifyListeners();
+    }
   }
+
+  void hideMarker() {
+    _visibleLocation = null;
+    notifyListeners();
+  }
+}
+
+class Location {
+  final String id;
+  final String name;
+  final String type;
+  final LatLng latLng;
+  final double rating;
+  final Icon icon;
+
+  Location({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.latLng,
+    required this.rating,
+    required this.icon,
+  });
 }
