@@ -1,17 +1,27 @@
 import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: "AIzaSyDEhxiclPqns08D4hY6cXPJCWjyL7_9rh0",
+          appId: "1:1072942649857:web:95e0a1638c691af31c6600",
+          messagingSenderId: "1072942649857",
+          projectId: "eventsgbg-5654c"));
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp();
+  MyApp();
+
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +33,29 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: MyHomePage(),
+        home: Scaffold(
+          body: Center(
+            child: FutureBuilder(
+              future: _initialization,
+              builder:
+                  (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return MyHomePage();
+                  case ConnectionState.active:
+                    return MyHomePage();
+                  case ConnectionState.waiting:
+                    return MyHomePage();
+                  case ConnectionState.done:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    return MyHomePage();
+                  // You can reach your snapshot.data['url'] in here
+                }
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -84,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             SafeArea(
               child: NavigationRail(
-                extended: extend && constaints.minWidth > 500,
+                extended: extend && constaints.maxWidth > 500,
                 destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.menu),
@@ -185,8 +217,6 @@ final List<Location> locations = [
 ];
 
 class MyMap extends StatelessWidget {
-  // Mock data for markers
-
   static final LatLng gothenburg = LatLng(57.7089, 11.9746);
 
   @override
@@ -219,8 +249,7 @@ class MyMap extends StatelessWidget {
                                   color: Colors.white,
                                   child: Row(
                                     children: [
-                                      Image.network(
-                                          'https://upload.wikimedia.org/wikipedia/commons/7/75/GBG-logo_2021.png'),
+                                      location.icon,
                                       SizedBox(width: 5),
                                       Expanded(
                                         // add this
