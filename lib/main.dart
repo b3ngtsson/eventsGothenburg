@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:namer_app/screens/error_page.dart';
 import 'package:namer_app/screens/my_home_page.dart';
 import 'package:provider/provider.dart';
 import 'providers/marker_visibility.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
                 (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return MyHomePage();
+                  return ErroPage();
                 case ConnectionState.active:
                   return MyHomePage();
                 case ConnectionState.waiting:
