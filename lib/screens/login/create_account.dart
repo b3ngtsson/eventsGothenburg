@@ -3,15 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:namer_app/screens/my_user_data.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user_provider.dart';
-import 'my_home_page.dart';
+import '../../providers/user_provider.dart';
+import '../my_home_page.dart';
 
-class SigninScreen extends StatefulWidget {
+class CreateAccountForm extends StatefulWidget {
   @override
-  _SigninScreenState createState() => _SigninScreenState();
+  _CreateAccountFormState createState() => _CreateAccountFormState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _CreateAccountFormState extends State<CreateAccountForm> {
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   late String _email;
@@ -29,14 +29,10 @@ class _SigninScreenState extends State<SigninScreen> {
         try {
           print("email: " + _email.toString());
           print("password: " + _password.toString());
-          userCredential = await _auth.signInWithEmailAndPassword(
+          userCredential = await _auth.createUserWithEmailAndPassword(
               email: _email, password: _password);
           if (userCredential.user != null) {
-            Provider.of<UserProvider>(context, listen: false)
-                .setUser(userCredential.user!);
-            print('Successfully signed in!');
-            print('User ID: ${userCredential.user!.uid}'); // User ID
-            print('User email: ${userCredential.user!.email}'); // User email
+            print('Successfully Created an account in!');
           } else {
             print('Failed to sign in.');
           }
@@ -61,6 +57,20 @@ class _SigninScreenState extends State<SigninScreen> {
             }
           }
         }
+        try {
+          userCredential = await _auth.signInWithEmailAndPassword(
+              email: _email, password: _password);
+          if (userCredential.user != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text("Signed in"), backgroundColor: Colors.green),
+            );
+            Provider.of<UserProvider>(context, listen: false)
+                .setUser(userCredential.user!);
+          }
+        } on FirebaseAuthException catch (err) {
+          print(err);
+        }
       }
     }
   }
@@ -69,7 +79,7 @@ class _SigninScreenState extends State<SigninScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: Text('Create account'),
       ),
       body: Form(
         key: _formKey,
@@ -109,7 +119,7 @@ class _SigninScreenState extends State<SigninScreen> {
             ),
             SizedBox(height: 12),
             ElevatedButton(
-              child: Text('Login'),
+              child: Text('Create account'),
               onPressed: _trySubmit,
             ),
           ],

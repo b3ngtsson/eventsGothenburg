@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:namer_app/screens/error_page.dart';
 
 import '../widgets/generator_page.dart';
-import 'loading_screen.dart';
+import 'login/loggedInOrLogin.dart';
+import 'login/sign_in_orchestrator.dart';
 import 'my_favorite_page.dart';
-import 'loggedInOrLogin.dart';
 
 class MyHomePage extends StatefulWidget {
   @override

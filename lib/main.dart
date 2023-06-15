@@ -5,13 +5,14 @@ import 'package:namer_app/providers/user_provider.dart';
 import 'package:namer_app/screens/error_page.dart';
 import 'package:namer_app/screens/loading_screen.dart';
 import 'package:namer_app/screens/my_home_page.dart';
-import 'package:namer_app/screens/loggedInOrLogin.dart';
-import 'package:namer_app/screens/sign_in_page.dart';
+import 'package:namer_app/screens/login/loggedInOrLogin.dart';
+import 'package:namer_app/screens/login/sign_in_page.dart';
 import 'package:provider/provider.dart';
 import 'providers/marker_visibility.dart';
 import 'providers/favorites.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'screens/login/sign_in_orchestrator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,11 +50,9 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
             ),
-            home:
-                MyHomePage(), // you don't need the ternary operator here as you're returning the same widget
+            home: MyHomePage(),
             routes: {
-              '/signin': (context) => SigninScreen(),
-              // You can define more named routes here
+              '/signin': (context) => SignInPage(),
             },
             onUnknownRoute: (settings) =>
                 MaterialPageRoute(builder: (context) => ErrorPage()),
