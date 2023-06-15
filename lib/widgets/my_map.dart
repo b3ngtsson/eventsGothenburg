@@ -22,12 +22,12 @@ class MyMap extends StatelessWidget {
           center: gothenburg,
           zoom: 13.0,
         ),
-        layers: [
-          TileLayerOptions(
+        children: [
+          TileLayer(
             urlTemplate:
                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
           ),
-          MarkerLayerOptions(
+          MarkerLayer(
             markers: mockLocationList
                 .map((location) => Marker(
                       width: 80.0,
@@ -90,10 +90,10 @@ class MyMap extends StatelessWidget {
 final List<MockLocation> mockLocationList = [
   MockLocation(
       id: '1',
-      name: 'Place 1',
+      name: 'Gojkos Grill',
       type: 'Restaurant',
-      latLng: LatLng(57.7089, 11.9746),
-      rating: 4.5,
+      latLng: LatLng(57.70725849022033, 12.973239116857783),
+      rating: 0.2,
       icon: Icon(Icons.fastfood)),
   MockLocation(
       id: '2',

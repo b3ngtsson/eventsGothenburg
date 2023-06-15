@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1072942649857",
+    "project_id": "eventsgbg-5654c",
+    "storage_bucket": "eventsgbg-5654c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072942649857:android:6b5ad5024eb0afe51c6600",
+        "android_client_info": {
+          "package_name": "com.example.eventsgbg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072942649857-5c9hk9upvfdlh1jgse0e4tq9ncr6nm9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzP9LVEhc2GsmVY8k0upoKBaLAD6KwYG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072942649857-5c9hk9upvfdlh1jgse0e4tq9ncr6nm9e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072942649857-d3uhq5dr3v09lv5samt9ahv51jjvp92o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eventsgbg"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

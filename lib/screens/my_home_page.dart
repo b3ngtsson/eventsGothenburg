@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:namer_app/screens/error_page.dart';
 
 import '../widgets/generator_page.dart';
-import '../widgets/my_favorite_page.dart';
+import 'loading_screen.dart';
+import 'my_favorite_page.dart';
+import 'loggedInOrLogin.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
+  Widget page = GeneratorPage();
 
   bool extend = false;
 
@@ -30,8 +33,11 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = FavoritesPage();
         break;
+      case 3:
+        page = LoggedInOrLogin();
+        break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        page = ErrorPage();
     }
     return LayoutBuilder(builder: (context, constaints) {
       return Scaffold(
@@ -52,6 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.supervised_user_circle_outlined),
+                    label: Text('user'),
                   ),
                 ],
                 selectedIndex: selectedIndex,
